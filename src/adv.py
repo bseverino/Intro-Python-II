@@ -70,7 +70,7 @@ while action[0] != 'q':
             print(f'* {item.name} - {item.description}')
 
     action = input(
-        '\nDirections:  [n], [s], [w], [e]\nInventory: [i] or [inventory]\nQuit game: [q]\nPlease enter a command: ').split()
+        '\nPlease enter a command ([h] for help): ').split()
 
     if len(action) == 2:
         contains_item = False
@@ -90,6 +90,10 @@ while action[0] != 'q':
                     contains_item = True
         if contains_item == False:
             print("\nThere is no such item in the room.")
+
+    elif action[0] == 'h':
+        print(
+            '\nCommands:\nMove: [n], [s], [w], [e]\nPick up item: [get ITEM] or [take ITEM]\nDrop item: [drop ITEM]\nInventory: [i] or [inventory]\nQuit game: [q]')
 
     elif action[0] == 'i' or action[0] == 'inventory':
         if len(player.items) > 0:
