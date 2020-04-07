@@ -1,4 +1,5 @@
 from player import Player
+from item import Item
 from room import Room
 
 # Declare all the rooms
@@ -22,6 +23,9 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
+# Item population
+
+room['foyer'].items.append(Item('sword', 'an old looking sword.'))
 
 # Link rooms together
 
@@ -52,32 +56,63 @@ player = Player('outside')
 #
 # If the user enters "q", quit the game.
 
-action = ''
+action = ['']
 current_room = room.get(player.current_room)
 
-while action != 'q':
-    print(f'\n{current_room.name}')
-    print(f'*{current_room.description}')
-    action = input('\nEnter a direction (n, e, s, w) or q to quit: ')
-    if action == 'n':
+while action[0] != 'q':
+    print(f'\n*** {current_room.name} ***')
+    print(f'{current_room.description}')
+
+    if len(current_room.items) > 0:
+        print('\nAvailable items:')
+        for item in current_room.items:
+            print(f'* {item.name} - {item.description}')
+
+    action = input(
+        '\nDirections:  [n], [s], [w], [e]\nInventory: [i] or [inventory]\nQuit game: [q]\nPlease enter a command: ').split()
+
+    if len(action) == 2:
+        contains_item = False
+        if action[0] == 'get' or action[0] == 'take':
+            for item in current_room.items:
+                if item.name == action[1]:
+                    item.on_take()
+                    current_room.items.remove(item)
+                    player.items.append(item)
+                    contains_item = True
+        if contains_item == False:
+            print("\nThere is no such item in the room.")
+
+    elif action[0] == 'i' or action[0] == 'inventory':
+        if len(player.items) > 0:
+            inventory = [item.name for item in player.items]
+            print(f'\nInventory: {inventory}')
+        else:
+            print('\nYou have no items.')
+
+    elif action[0] == 'n':
         try:
             current_room = current_room.n_to
         except AttributeError:
             print('\nYou cannot go north')
-    elif action == 'e':
+
+    elif action[0] == 'e':
         try:
             current_room = current_room.e_to
         except AttributeError:
             print('\nYou cannot go east')
-    elif action == 's':
+
+    elif action[0] == 's':
         try:
             current_room = current_room.s_to
         except AttributeError:
             print('\nYou cannot go south')
-    elif action == 'w':
+
+    elif action[0] == 'w':
         try:
             current_room = current_room.w_to
         except AttributeError:
             print('\nYou cannot go west')
-    else:
+
+    elif action[0] != 'q':
         print('\nPlease enter a valid command')
