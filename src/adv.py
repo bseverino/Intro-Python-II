@@ -19,13 +19,14 @@ the distance, but there is no way across the chasm."""),
 to north. The smell of gold permeates the air."""),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
-chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+chamber! The only exit is to the south."""),
 }
 
 # Item population
 
 room['foyer'].items.append(Item('sword', 'an old looking sword.'))
+room['treasure'].items.extend([Item('coins', 'a pouch of shiny coins.'), Item(
+    'gem', 'a brilliant red gemstome.'), Item('dagger', 'an exquisitely carved dagger.')])
 
 # Link rooms together
 
@@ -80,13 +81,21 @@ while action[0] != 'q':
                     current_room.items.remove(item)
                     player.items.append(item)
                     contains_item = True
+        if action[0] == 'drop':
+            for item in player.items:
+                if item.name == action[1]:
+                    item.on_drop()
+                    player.items.remove(item)
+                    current_room.items.append(item)
+                    contains_item = True
         if contains_item == False:
             print("\nThere is no such item in the room.")
 
     elif action[0] == 'i' or action[0] == 'inventory':
         if len(player.items) > 0:
-            inventory = [item.name for item in player.items]
-            print(f'\nInventory: {inventory}')
+            print('\nInventory:')
+            for item in player.items:
+                print(f'* {item.name} - {item.description}')
         else:
             print('\nYou have no items.')
 
