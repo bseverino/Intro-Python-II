@@ -78,15 +78,15 @@ while action[0] != 'q':
             for item in current_room.items:
                 if item.name == action[1]:
                     item.on_take()
-                    current_room.items.remove(item)
-                    player.items.append(item)
+                    current_room.remove_item(item)
+                    player.take_item(item)
                     contains_item = True
         if action[0] == 'drop':
             for item in player.items:
                 if item.name == action[1]:
                     item.on_drop()
-                    player.items.remove(item)
-                    current_room.items.append(item)
+                    player.drop_item(item)
+                    current_room.place_item(item)
                     contains_item = True
         if contains_item == False:
             print("\nThere is no such item in the room.")
