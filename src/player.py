@@ -10,6 +10,14 @@ class Player:
     def move(self, room):
         self.current_room = room
 
+    def inventory(self):
+        if len(self.items) > 0:
+            print('\nInventory:')
+            for item in self.items:
+                print(f'* {item.name} - {item.description}')
+        else:
+            print('\nYou have no items.')
+
     def take_item(self, item):
         self.items.append(item)
 

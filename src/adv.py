@@ -1,5 +1,5 @@
 from player import Player
-from item import Item
+from item import Item, LightSource
 from room import Room
 
 # Declare all the rooms
@@ -57,75 +57,82 @@ player = Player('outside')
 #
 # If the user enters "q", quit the game.
 
-action = ['']
+game = True
 current_room = room.get(player.current_room)
 
-while action[0] != 'q':
-    print(f'\n*** {current_room.name} ***')
-    print(f'{current_room.description}')
+current_room.describe()
 
-    if len(current_room.items) > 0:
-        print('\nAvailable items:')
-        for item in current_room.items:
-            print(f'* {item.name} - {item.description}')
-
+while game == True:
     action = input(
         '\nPlease enter a command ([h] for help): ').split()
 
+    # Take or drop item
     if len(action) == 2:
         contains_item = False
         if action[0] == 'get' or action[0] == 'take':
             for item in current_room.items:
                 if item.name == action[1]:
-                    item.on_take()
                     current_room.remove_item(item)
                     player.take_item(item)
+                    current_room.describe()
+                    item.on_take()
                     contains_item = True
         if action[0] == 'drop':
             for item in player.items:
                 if item.name == action[1]:
-                    item.on_drop()
                     player.drop_item(item)
                     current_room.place_item(item)
+                    current_room.describe()
+                    item.on_drop()
                     contains_item = True
         if contains_item == False:
             print("\nThere is no such item in the room.")
 
+    # Show available commands
     elif action[0] == 'h':
+        current_room.describe()
         print(
             '\nCommands:\nMove: [n], [s], [w], [e]\nPick up item: [get ITEM] or [take ITEM]\nDrop item: [drop ITEM]\nInventory: [i] or [inventory]\nQuit game: [q]')
 
+    # Inventory
     elif action[0] == 'i' or action[0] == 'inventory':
-        if len(player.items) > 0:
-            print('\nInventory:')
-            for item in player.items:
-                print(f'* {item.name} - {item.description}')
-        else:
-            print('\nYou have no items.')
+        current_room.describe()
+        player.inventory()
 
+    # Movement
     elif action[0] == 'n':
         try:
             current_room = current_room.n_to
+            current_room.describe()
         except AttributeError:
+            current_room.describe()
             print('\nYou cannot go north')
-
     elif action[0] == 'e':
         try:
             current_room = current_room.e_to
+            current_room.describe()
         except AttributeError:
+            current_room.describe()
             print('\nYou cannot go east')
-
     elif action[0] == 's':
         try:
             current_room = current_room.s_to
+            current_room.describe()
         except AttributeError:
+            current_room.describe()
             print('\nYou cannot go south')
-
     elif action[0] == 'w':
         try:
             current_room = current_room.w_to
+            current_room.describe()
         except AttributeError:
+            current_room.describe()
             print('\nYou cannot go west')
 
-    elif action[0] != 'q':
+    # Quit game
+    elif action[0] == 'q':
+        game = False
+
+    # Error handling
+    else:
         print('\nPlease enter a valid command')

@@ -8,6 +8,14 @@ class Room:
         self.description = description
         self.items = []
 
+    def describe(self):
+        print(f'\n\n*** {self.name} ***')
+        print(f'{self.description}')
+        if len(self.items) > 0:
+            print('\nAvailable items:')
+            for item in self.items:
+                print(f'* {item.name} - {item.description}')
+
     def place_item(self, item):
         self.items.append(item)
 
